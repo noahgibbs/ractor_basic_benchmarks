@@ -1,0 +1,3 @@
+# Ractor Basic Benchmarking
+
+Awhile back I [wrote some code](https://github.com/noahgibbs/fiber_basic_benchmarks/) and [some](https://appfolio-engineering.squarespace.com/appfolio-engineering/2019/9/4/benchmark-results-threads-processes-and-fibers) [articles](https://engineering.appfolio.com/appfolio-engineering/2019/10/15/more-fiber-benchmarking) on benchmarking fibers, threads and processes against each other in Ruby. The same basic approach works for Ractors - but we'll want more calculation instead of all I/O. Ractors' entire benefit is when they have to do work ***in Ruby*** rather than just C extensions or waiting for I/O.
