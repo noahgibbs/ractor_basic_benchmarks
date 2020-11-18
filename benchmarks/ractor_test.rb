@@ -45,7 +45,6 @@ t1 = Time.now
 working_time = t1 - t0
 
 out = out.sort_by {|pair| pair[0]}
-pp out
 out_digest = Digest::SHA1.base64digest(out.inspect)
 
 out_data = {

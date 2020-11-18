@@ -116,7 +116,6 @@ workers.each { |pid| Process.waitpid(pid) }
 
 out_pairs.sort_by! { |p| p[0] }
 out_digest = Digest::SHA1.base64digest(out_pairs.inspect)
-pp out_pairs
 
 success = true
 if pending_write_msgs.any? { |p| p != 0 } || pending_read_msgs.any? { |p| p != 0}

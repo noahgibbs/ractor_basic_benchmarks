@@ -8,11 +8,11 @@
 # different concurrency setups - threads and fibers might well have an advantage over
 # processes for message I/O efficiency, for instance.
 
-REPS_PER_CONFIG = 1
+REPS_PER_CONFIG = 10
 
 # Try 10x messages
 WORKER_CONFIGS = [
-    [ 5,   10],
+    [ 5,   2_000 ],
     #[ 10,  1_000],
     #[ 100,  10_000],
     #[ 1_000, 1_000],
@@ -30,8 +30,9 @@ SHELL_PREAMBLE = "ulimit -Sn 10240"
 COLLECTOR_TS = Time.now.to_i
 
 require "json"
+require "fileutils"
 
-data_filename = "collector_data_#{COLLECTOR_TS}.json"
+data_filename = "data/collector_data_#{COLLECTOR_TS}.json"
 out_data = {
     collector_ruby_version: RUBY_VERSION,
     reps_per_config: REPS_PER_CONFIG,
@@ -104,6 +105,7 @@ ordered_configs.each do |config|
   run_data[:digest] = run_data[:result_data]["digest"] if data_present
 
   out_data[:results].push run_data
+  FileUtils.rm_f run_data_file
 end
 
 if ordered_configs.size != successes + failures + skips + no_data

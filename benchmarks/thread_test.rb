@@ -57,14 +57,13 @@ workers = (1..NUM_WORKERS).map do
   end
 end
 
-out = WQ.results
+sleep 0.05 until WQ.work.empty?
+sleep 0.05 until WQ.results.size == NUM_REQUESTS * NUM_WORKERS
 t1 = Time.now
 working_time = t1 - t0
 
-sleep 0.05 until WQ.work.empty?
-
+out = WQ.results
 out.sort_by! {|pair| pair[0]}
-pp out
 out_digest = Digest::SHA1.base64digest(out.inspect)
 
 out_data = {
