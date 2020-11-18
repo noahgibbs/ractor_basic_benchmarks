@@ -76,12 +76,14 @@ preamble_keys.each do |preamble|
                     whole_process_data = data_array.map { |result| result["whole_process_time"] }
                     working_data = data_array.map { |result| result["result_data"]["time"] }
                     puts "Messages-only data for configuration #{config_description}:"
+                    puts "  samples:  #{working_data.size}"
                     puts "  mean:     #{array_mean(working_data)}"
                     puts "  median:   #{percentile(working_data, 50)}"
                     puts "  variance: #{array_variance(working_data)}"
                     puts "  std_dev:  #{Math.sqrt array_variance(working_data)}"
                     puts "-----"
                     puts "Whole-process data for configuration #{config_description}:"
+                    puts "  samples:  #{whole_process_data.size}"
                     puts "  mean:     #{array_mean(whole_process_data)}"
                     puts "  median:   #{percentile(whole_process_data, 50)}"
                     puts "  variance: #{array_variance(whole_process_data)}"

@@ -22,6 +22,7 @@ BENCHMARKS = [
     "fork_test.rb",
     "thread_test.rb",
     "ractor_test.rb",
+    "pipeless_ractor_test.rb",
 ]
 
 RUBY_VERSIONS = [ "3.0.0-preview1" ]
@@ -60,6 +61,8 @@ successes = 0
 failures = 0
 skips = 0
 no_data = 0
+
+digests = {}
 
 run_data_file = "/tmp/ruby_fiber_collector_#{COLLECTOR_TS}_subconfig.json"
 
@@ -102,7 +105,11 @@ ordered_configs.each do |config|
 
   run_data[:result_data] = nil
   run_data[:result_data] = JSON.load(File.read run_data_file) if data_present
-  run_data[:digest] = run_data[:result_data]["digest"] if data_present
+
+  if data_present
+    digests[run_data[:result_data]["digest"]] ||= 0
+    digests[run_data[:result_data]["digest"]] += 1
+  end
 
   out_data[:results].push run_data
   FileUtils.rm_f run_data_file
@@ -112,13 +119,26 @@ if ordered_configs.size != successes + failures + skips + no_data
     puts "Error in collector bookkeeping! #{ordered_configs.size} total configurations, but: successes: #{successes}, failures: #{failures}, no data: #{no_data}, skips: #{skips}"
 end
 
+# Assume digest values that no other run replicated are incorrect
+digests.keys.each { |k| digests.delete(k) if digests[k] == 1 }
+
+if digests.size > 1
+  raise "Error! Digests table had more than one concensus digest! #{digests.inspect}"
+end
+
+correct_digest = digests.keys.first
+num_results = out_data[:results].size
+out_data[:results].select! { |run_data| !run_data[:result_data] || run_data[:result_data]["digest"] == correct_digest }
+bad_digest = num_results - out_data[:results].size
+
 out_data[:summary] = {
     successes: successes,
     failures: failures,
     skips: skips,
     no_data: no_data,
+    bad_digest: bad_digest,
     total_configs: ordered_configs.size,
-    digests: out_data[:results].map { |r| r[:digest] }.compact.uniq
+    digests: out_data[:results].map { |r| r[:result_data] ? r[:result_data]["digest"] : nil }.compact.uniq
 }
 
 File.open(data_filename, "w") do |f|
