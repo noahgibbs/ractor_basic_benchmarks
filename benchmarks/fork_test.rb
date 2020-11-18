@@ -126,7 +126,6 @@ if pending_write_msgs.any? { |p| p != 0 } || pending_read_msgs.any? { |p| p != 0
   success = false
 else
   puts "All messages delivered successfully w/ digest #{out_digest}..."
-  exit 0
 end
 
 out_data = {
@@ -141,5 +140,5 @@ out_data = {
 File.open(OUTFILE, "w") do |f|
   f.write JSON.pretty_generate(out_data)
 end
-
+puts "Wrote data to file #{OUTFILE}."
 # Exit
