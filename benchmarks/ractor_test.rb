@@ -26,23 +26,26 @@ RN = NUM_WORKERS
 workers = (1..RN).map do
   Ractor.new pipe do |pipe|
     while n = pipe.take
-      Ractor.yield [n, (n..(n+99)).map { |nn| nn.prime? } ]
+      bools = (n..(n+99)).map { |nn| nn.prime? }
+      p_int = bools.inject(0) { |total, b| total * 2 + (b ? 1 : 0) }
+      Ractor.yield [n, p_int ]
     end
   end
 end
 
-(1..N).each{|i|
+(1..(NUM_REQUESTS*NUM_WORKERS)).each{|i|
   pipe << (i*100)
 }
 
-out = (1..N).map {
+out = (1..(NUM_REQUESTS*NUM_WORKERS)).map {
   _r, (n, b) = Ractor.select(*workers)
   [n, b]
 }
 t1 = Time.now
 working_time = t1 - t0
 
-out.sort_by!{|(n, b)| n}
+out = out.sort_by {|pair| pair[0]}
+pp out
 out_digest = Digest::SHA1.base64digest(out.inspect)
 
 out_data = {
