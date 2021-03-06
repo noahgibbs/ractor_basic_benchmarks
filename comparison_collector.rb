@@ -10,10 +10,9 @@
 
 REPS_PER_CONFIG = 10
 
-# Try 10x messages
 WORKER_CONFIGS = [
     [ 5,   2_000 ],
-    #[ 10,  1_000],
+    [ 10,  1_000],
     #[ 100,  10_000],
     #[ 1_000, 1_000],
 ]
@@ -23,6 +22,8 @@ BENCHMARKS = [
     "thread_test.rb",
     "ractor_test.rb",
     "pipeless_ractor_test.rb",
+    "no_select_ractor_test.rb",  # Try without Ractor.select, which ko1 says is slow - thanks to Marc-André Lafortune!
+    "single_test.rb", # Compare against a single-threaded test - thanks to Marc-André Lafortune!
 ]
 
 RUBY_VERSIONS = [ "3.0.0-preview1" ]
