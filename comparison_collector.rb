@@ -26,7 +26,7 @@ BENCHMARKS = [
     "single_test.rb", # Compare against a single-threaded test - thanks to Marc-André Lafortune!
 ]
 
-RUBY_VERSIONS = [ "3.0.0-preview1" ]
+RUBY_VERSIONS = [ "3.0.0" ]
 SHELL_PREAMBLE = "ulimit -Sn 10240"
 
 COLLECTOR_TS = Time.now.to_i
