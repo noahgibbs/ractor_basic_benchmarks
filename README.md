@@ -2,6 +2,8 @@
 
 Awhile back I [wrote some code](https://github.com/noahgibbs/fiber_basic_benchmarks/) and [some](https://appfolio-engineering.squarespace.com/appfolio-engineering/2019/9/4/benchmark-results-threads-processes-and-fibers) [articles](https://engineering.appfolio.com/appfolio-engineering/2019/10/15/more-fiber-benchmarking) on benchmarking fibers, threads and processes against each other in Ruby. The same basic approach works for Ractors - but we'll want more calculation instead of all I/O. Ractors' entire benefit is when they have to do work ***in Ruby*** rather than just C extensions or waiting for I/O.
 
+NOTE: for released Ruby 3.0.0 I'm seeing Ractors being ***slower than threads***, which in turn means slower than single-worker. If you see the same, that doesn't mean you're doing it wrong. I started from core-team published Ractor benchmarks -- my early attempts to use the API from the basic documentation didn't go well. From this I guess that Ractors in 3.0.0 are still hard to use, and especially hard to get great performance from. I assume that "production-quality" Ractors will be a later release of Ruby.
+
 ## Using this Benchmark
 
 For a "basic" run, just run comparison_collector.rb. After awhile, it should create a data file with the various results:
